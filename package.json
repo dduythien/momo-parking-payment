@@ -1,0 +1,70 @@
+{
+  "name": "parking-payment-app",
+  "version": "0.0.17",
+  "scripts": {
+    "all": "watchman watch-del-all && rm -rf yarn.lock && rm -rf node_modules/ && rm -fr $TMPDIR/metro* && yarn install",
+    "start": "bash start.sh 8181",
+    "test": "jest",
+    "lint": "eslint .",
+    "platform": "NODE_OPTIONS=--openssl-legacy-provider momo-miniapp run-ios",
+    "dev": "NODE_OPTIONS=--openssl-legacy-provider  momo-miniapp start"
+  },
+  "dependencies": {
+    "@momo-kits/auto-complete": "^0.0.48-rc.4",
+    "@momo-kits/bank": "^0.0.48-rc.4",
+    "@momo-kits/carousel": "^0.0.48-rc.4",
+    "@momo-kits/core": "0.0.54-beta",
+    "@momo-kits/custom": "^0.0.48-rc.4",
+    "@momo-kits/lottie": "^0.0.48-rc.4",
+    "@momo-kits/message": "^0.0.48-rc.4",
+    "@momo-kits/radio": "^0.0.48-rc.4",
+    "@momo-kits/selection": "^0.0.48-rc.4",
+    "@momo-kits/separator": "^0.0.48-rc.4",
+    "@momo-kits/skeleton": "^0.0.48-rc.4",
+    "@momo-kits/transaction": "^0.0.43-beta.2",
+    "@momo-miniapp/api": "^0.1.5-beta.3",
+    "@momo-platform/component-kits": "^1.3.26",
+    "ahooks": "^3.7.8",
+    "axios": "^1.4.0",
+    "crypto": "^1.0.1",
+    "crypto-js": "^4.1.1",
+    "lodash": "^4.17.21",
+    "qrcode-terminal": "0.12.0",
+    "react": "17.0.1",
+    "react-hook-form": "^7.45.4",
+    "react-native": "0.64.2",
+    "react-native-crypto": "^2.2.0",
+    "react-native-gesture-handler": "1.10.3",
+    "react-native-momosdk": "^1.4.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.9",
+    "@babel/preset-env": "^7.15.6",
+    "@babel/runtime": "^7.12.5",
+    "@react-native-community/eslint-config": "^0.0.5",
+    "babel-jest": "^24.8.0",
+    "babel-plugin-module-resolver": "^4.0.0",
+    "eslint": "^6.1.0",
+    "husky": "^4.3.0",
+    "jest": "^24.8.0",
+    "metro-react-native-babel-preset": "^0.72.2",
+    "react-native-svg": "git+https://gitlab.com/momo-platform/react-native-svg.git#v12.1.0.public",
+    "react-test-renderer": "17.0.1"
+  },
+  "jest": {
+    "preset": "react-native"
+  },
+  "publishConfig": {
+    "@momo-miniapp:registry": "https://gitlab.com/api/v4/projects/27153631/packages/npm/"
+  },
+  "resolutions": {
+    "react": "17.0.1",
+    "react-native": "0.64.2",
+    "@momo-kits/core": "0.0.54-beta",
+    "react-native-fast-image": "8.1.5",
+    "react-native-gesture-handler": "1.10.3",
+    "react-native-pager-view": "5.1.8",
+    "react-refresh": "0.4.3",
+    "metro-react-native-babel-preset": "^0.72.2"
+  }
+}
