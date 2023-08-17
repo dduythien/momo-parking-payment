@@ -35,6 +35,7 @@ const updateIndex = () => {
 
 const updateWebpackConfig = () => {
     let webpack = fs.readFileSync(WEBPACK_CONFIG_PATH, { encoding: 'utf-8' });
+    console.log("webpack: ", webpack)
     webpack = webpack.replace("ReactNative.getPublicPath(devServer),", `ReactNative.getPublicPath(devServer),
         library: {
             name: appId,
