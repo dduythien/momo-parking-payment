@@ -1,18 +1,12 @@
 import React, { useState, useEffect } from "react";
 import {
   View,
-  SafeAreaView,
-  TouchableOpacity,
-  NativeModules,
-  NativeEventEmitter,
-  Platform,
+  SafeAreaView
 } from "react-native";
-import { Spacing, Colors, Text, Input, Button, Icon, Popup } from "@momo-kits/core";
+import { Spacing, Text, Button, Popup } from "@momo-kits/core";
 
 import { InforTable } from "@momo-kits/bank";
-import { AutoComplete } from "@momo-kits/auto-complete";
-import { RadioList } from "@momo-kits/radio";
-import { ButtonFooter } from "@momo-kits/custom";
+
 import { useRequest } from "ahooks";
 import MiniApi from "@momo-miniapp/api";
 import { COOKIE_NAMES } from "../utils/constant";
@@ -66,7 +60,7 @@ const DetailScreen = (props) => {
     setPaymentInfo(data)
   }, []);
 
-  const { runAsync: goPayment } = useRequest(
+  const { runAsync: goPayment, error } = useRequest(
     (payload) =>
     paymentService(payload),
     {
@@ -80,28 +74,19 @@ const DetailScreen = (props) => {
           MiniApi.openURL(deeplinkMiniApp);
         } else {
           const { navigator } = props;
-          navigator.show({
-            screen: Popup.Alert,
-             params: {
-                header: { uri: 'https://i.imgur.com/s70S9s9.png' },
-                title: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore',
-                body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore ',
-                buttons: [{
-                    title: 'LOGOUT',
-                    closeOnPress: false,
-                    onPress: () => {
-                    }
-                }, {
-                    title: 'CLOSE',
-                    onPress: () => {
-                    }
-                }]
-            }
-          });
+          MiniApi.showAlert(
+            "Thông báo",
+            'Chưa cấp quyền sử dụng deepLink miniApp',
+            ["OK"]
+          )
         }
       },
       onError: async (data) => {
-        console.log('errorL: ', data)
+        MiniApi.showAlert(
+          "Thông báo",
+          'Đã có lỗi xảy ra. Vui lòng kiểm tra lại thông tin',
+          ["OK"]
+        )
       },
       onFinally: () => {
         MiniApi.hideLoading()
