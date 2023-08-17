@@ -4,13 +4,13 @@ import { Spacing, Colors, Text, Input, Button, Icon } from "@momo-kits/core";
 
 import { AutoComplete } from "@momo-kits/auto-complete";
 import { Radio, RadioList } from "@momo-kits/radio";
-import { ButtonFooter } from "@momo-kits/custom";
 import {useRequest} from 'ahooks'
 import MiniApi from "@momo-miniapp/api";
 import {COOKIE_NAMES} from '../utils/constant'
 import _get from 'lodash/get'
 import Detail from './Detail';
 import {authenticate, createParkingSessionService} from '../api';
+import momoConfig from '../momoConfig'
 
 const data4 = [{ title: "Viettel Complex", value: "ViettelComplex" }];
 
@@ -44,8 +44,8 @@ const HomeScreen = (props) => {
   const { run: fetchAccount } = useRequest(
     () =>
       authenticate({
-        userName: "momo",
-        password: "123456",
+        userName: momoConfig.userName,
+        password: momoConfig.password,
       }),
     {
       onBefore: () => {
@@ -67,6 +67,7 @@ const HomeScreen = (props) => {
         MiniApi.showLoading()
       },
       onSuccess: async (data) => {
+        console.log("createParkingSessionService: ", data)
         if(!data.success) {
           MiniApi.showAlert(
             "Thông báo",
@@ -84,7 +85,8 @@ const HomeScreen = (props) => {
           })
         }
       },
-      onFinally: () => MiniApi.hideLoading()
+      onFinally: () => MiniApi.hideLoading(),
+      manual: true
     },
   );
 
