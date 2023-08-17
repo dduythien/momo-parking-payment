@@ -19,6 +19,7 @@ import { COOKIE_NAMES } from "../utils/constant";
 import _get from "lodash/get";
 import { paymentService } from "../api";
 import { handleFormatMoney } from "../utils/utils";
+import momoConfig from '../momoConfig'
 
 
 import CryptoJS from "crypto-js";
@@ -120,20 +121,17 @@ const DetailScreen = (props) => {
     // const requestId = paymentInfo.transactionId;
 
     const orderInfo = "Thu hộ phí giữ xe toà nhà 285 CMT8";
-    const partnerCode = "MOMOBKUN20180529";
-    const paymentCode = "MOMO";
-    const redirectUrl = "momo://?refId=dev_tool&tripId=GKX2SYA&tranxId=mipay_4179&appId=miniapp.pOQ11V0tzrOFzSbrxHEW.parkingpaymentapp&deeplink=true";
-    const ipnUrl = "momo://?refId=dev_tool&tripId=GKX2SYA&tranxId=mipay_4179&appId=miniapp.pOQ11V0tzrOFzSbrxHEW.parkingpaymentapp&deeplink=true"; //TODO:
-    const requestType = "captureWallet";
-    const extraData = "ewoiZW1haWwiOiAiZ3JlZW5zbWFydC4wMUBncmVlbi5jb20udm4iCn0=";
+    const partnerCode = momoConfig.partnerCode;
+    const extraData = momoConfig.extraData;
+    const accessKey = momoConfig.accessKey;
 
-    const accessKey = "klm05TvNBzhg7h7j"
-    // const rawSignature = "accessKey=" + accessKey + "&amount=" + amount + "&extraData=" + extraData + "&ipnUrl=" + ipnUrl + "&orderId=" + orderId + "&orderInfo=" + orderInfo + "&partnerCode=" + partnerCode +  "&redirectUrl=" + redirectUrl + "&requestId=" + requestId + "&requestType=" + requestType;
+    const redirectUrl =  momoConfig.redirectUrl;
+    const ipnUrl = momoConfig.ipnUrl;
+    const requestType = "captureWallet";
+    const paymentCode = "MOMO";
     const rawSignature = "accessKey=" + accessKey + "&amount=" + amount + "&extraData=" + extraData + "&ipnUrl=" + ipnUrl + "&orderId=" + orderId + "&orderInfo=" + orderInfo + "&partnerCode=" + partnerCode +  "&redirectUrl=" + redirectUrl + "&requestId=" + requestId + "&requestType=" + requestType;
  
-    const secretKey = "at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa";
-    console.log("rawSignature: ", rawSignature)
-   
+    const secretKey = momoConfig.secretKey;
     const hash = CryptoJS.HmacSHA256(rawSignature, secretKey);
     const signature = CryptoJS.enc.Hex.stringify(hash);
 
