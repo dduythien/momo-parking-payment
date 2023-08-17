@@ -20,6 +20,7 @@ function addDependencies() {
     delete packageJSON.dependencies['react-test-renderer'];
     delete packageJSON.dependencies['@babel/preset-env'];
     delete packageJSON.devDependencies['babel-plugin-module-resolver'];
+   
 
     packageJSON.devDependencies['@babel/core'] = '^7.12.9';
     packageJSON.devDependencies['@babel/runtime'] = '^7.12.5';
@@ -30,6 +31,8 @@ function addDependencies() {
     packageJSON.devDependencies['react-test-renderer'] = '17.0.1';
     packageJSON.devDependencies['@babel/preset-env'] = '^7.15.6';
     packageJSON.devDependencies['babel-plugin-module-resolver'] = '^4.0.0';
+    packageJSON.devDependencies['node-polyfill-webpack-plugin'] = '2.0.1';
+
 
     packageJSON.resolutions['react'] = '17.0.1';
     packageJSON.resolutions['react-native'] = 'git+https://oauth2:glpat-x9P49rY2rKesd2_EuzRZ@gitlab.com/momo-platform/react-native-v3.1.git#0.64-stable-duplicate-view';
