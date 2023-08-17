@@ -17,21 +17,12 @@ import { useRequest } from "ahooks";
 import MiniApi from "@momo-miniapp/api";
 import { COOKIE_NAMES } from "../utils/constant";
 import _get from "lodash/get";
-import Detail from "./Detail";
 import { paymentService } from "../api";
 import { handleFormatMoney } from "../utils/utils";
 
-// import sha256 from 'crypto-js/sha256';
-// import hmacSHA512 from 'crypto-js/hmac-sha512';
-// import Base64 from 'crypto-js/enc-base64';
 
 import CryptoJS from "crypto-js";
 
-
-// import crypto from 'crypto';
-// import RNMomosdk from "react-native-momosdk";
-// const RNMoMoPaymentModule = NativeModules.RNMomosdk;
-// const EventEmitter = new NativeEventEmitter(RNMoMoPaymentModule);
 
 const data1 = [
   { title: "MobiFone" },
@@ -163,6 +154,9 @@ const DetailScreen = (props) => {
       storeId: partnerCode,
     }
     console.log(payload)
+    console.log("SET RCOOKIE_NAMES.PARKING_SESSION_ID: ", paymentInfo.parkingSessionId)
+    await MiniApi.setItem(COOKIE_NAMES.PARKING_SESSION_ID, paymentInfo.parkingSessionId);
+
     await goPayment(payload)
   
   };

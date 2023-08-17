@@ -3,7 +3,7 @@ import { View, SafeAreaView, TouchableOpacity } from "react-native";
 import { Spacing, Colors, Text, Input, Button, Icon } from "@momo-kits/core";
 
 import { AutoComplete } from "@momo-kits/auto-complete";
-import { RadioList } from "@momo-kits/radio";
+import { Radio, RadioList } from "@momo-kits/radio";
 import { ButtonFooter } from "@momo-kits/custom";
 import {useRequest} from 'ahooks'
 import MiniApi from "@momo-miniapp/api";
@@ -22,6 +22,11 @@ const data1 = [
   { title: "GMobile" },
 ];
 
+const TYPE_INFO = {
+  VEHICLE_NUMBER:  'Biển số xe',
+  CARD_LABEL: 'Mã thẻ xe',
+}
+
 const HomeScreen = (props) => {
 
   const data = [
@@ -31,9 +36,11 @@ const HomeScreen = (props) => {
     { name: "Item 1.1", test: "14" },
   ];
 
+  const [typeInfo, setTypeInfo] = useState(0)
+
   const [partnerCode, setPartnerCode] = useState('viettelComplex')
-  const [cardLabel, setCardLabel] = useState('8815')
-  const [vehicleNumber, setVehicleNumber] = useState('51H-31401')
+  const [cardLabel, setCardLabel] = useState('') //8815
+  const [vehicleNumber, setVehicleNumber] = useState('') //51H-31401
   const { run: fetchAccount } = useRequest(
     () =>
       authenticate({
@@ -60,20 +67,37 @@ const HomeScreen = (props) => {
         MiniApi.showLoading()
       },
       onSuccess: async (data) => {
-        MiniApi.hideLoading();
-        const { navigator } = props;
-        navigator.push({
-          screen: Detail,
-          options: {title: "Thanh toán"},
-          params: {
-            data
-          }
-        })
+        if(!data.success) {
+          MiniApi.showAlert(
+            "Thông báo",
+            data.errorMessage,
+            ["OK"]
+          )
+        } else {
+          const { navigator } = props;
+          navigator.push({
+            screen: Detail,
+            options: {title: "Thanh toán"},
+            params: {
+              data
+            }
+          })
+        }
       },
+      onFinally: () => MiniApi.hideLoading()
     },
   );
 
   const onNext = () => {
+    console.log("!vehicleNumber && !cardLabel: ", !vehicleNumber && !cardLabel)
+    if(!vehicleNumber && !cardLabel) {
+      MiniApi.showAlert(
+        "Thông báo",
+        "Vui lòng nhập đủ thông tin",
+        ["OK"]
+      )
+      return;
+    }
     const payload = {
       cardLabel,
       vehicleNumber,
@@ -82,13 +106,28 @@ const HomeScreen = (props) => {
       bypassCheckFee: true,
     };
     createParkingSession(payload)
-    // MiniApi.openURL("momo://app?action=payWithApp&isScanQR=false&serviceType=miniapp&sid=TU9NT0JLVU4yMDE4MDUyOXwxNjkyMDIyNTgzNTQ3OjAxMjM0NTY3Nzg&v=3.0");
-
   }
 
   useEffect(() => {
     fetchAccount()
   }, [])
+
+  const onChangeInfoType = (type) => {
+    if (type === 0) {
+      setCardLabel("")
+    } else {
+      setVehicleNumber("")
+    }
+    setTypeInfo(type)
+  }
+
+  const onChangeInfo = (text) => {
+    if(text === 0) {
+      setVehicleNumber(text)
+    } else {
+      setCardLabel(text)
+    }
+  }
   
 
   return (
@@ -100,7 +139,7 @@ const HomeScreen = (props) => {
           </Text>
         </View>
 
-        <AutoComplete
+        {/* <AutoComplete
           data={data4}
           onSelected={(selected) => console.log(selected.value)}
         >
@@ -110,18 +149,60 @@ const HomeScreen = (props) => {
             floatingValue="Nhập bãi giữ xe"
             placeholder="Nhập dữ liệu"
             value={partnerCode}
+            disable
           />
-        </AutoComplete>
-        <Input
-          onChangeText={ (text) => setVehicleNumber(text)}
+        </AutoComplete> */}
+          <Input
+          onChangeText={ (text) => setPartnerCode(text)}
           placeholder="Nhập dữ liệu"
-          cancellable
-          floatingValue="Nhập Biển số xe/Mã thẻ xe"
+          // cancellable
+          floatingValue={"Bãi giữ xe"}
           floatingIcon={null}
           floatingIconStyle={{}}
           floatingNumberOfLines={1}
-          value={vehicleNumber}
+          value={partnerCode}
+          disabled
         />
+
+        <RadioList
+          data={[
+            TYPE_INFO.VEHICLE_NUMBER,
+            TYPE_INFO.CARD_LABEL
+          ]}
+          defaultIndex={0}
+          disableButtons={null}
+          itemContainerStyle={{}}
+          listProps={{}}
+          direction="row"
+          onChange={ (data) => onChangeInfoType(data)}
+          style={{marginBottom: Spacing.XL}}
+          title="Lựa chọn loại xác minh"
+          titleStyle={{ paddingBottom: Spacing.XS}}
+          valueStyle={{}}
+        />
+        {
+          typeInfo === 0 ?
+             <Input
+             onChangeText={(text) => setVehicleNumber(text)}
+             placeholder="Nhập dữ liệu"
+             cancellable
+             floatingValue={"Biển số xe" }
+             floatingIcon={null}
+             floatingIconStyle={{}}
+             floatingNumberOfLines={1}
+             value={vehicleNumber}
+           /> :
+           <Input
+             onChangeText={(text) => setCardLabel(text)}
+             placeholder="Nhập dữ liệu"
+             cancellable
+             floatingValue={"Mã thẻ xe"}
+             floatingIcon={null}
+             floatingIconStyle={{}}
+             floatingNumberOfLines={1}
+             value={cardLabel}
+             />
+        }
         <View
           style={{
             flex: 1,
