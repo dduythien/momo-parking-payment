@@ -1,5 +1,5 @@
 const config = {
-  partnerCode: "MOMOBKUN20180529",
+  partnerCode: "MOMOBUKH20230721",
   accessKey: "klm05TvNBzhg7h7j",
   secretKey: "at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa",
   redirectUrl: "momo://?refId=dev_tool&tripId=GKX2SYA&tranxId=mipay_4179&appId=miniapp.pOQ11V0tzrOFzSbrxHEW.parkingpaymentapp&deeplink=true",
