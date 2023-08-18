@@ -1,5 +1,3 @@
-// import request from "./request";
-// import { IPaymentSession, IPaymentSessionResponse } from "@services/models";
 import { getStore } from "../utils/utils";
 import {COOKIE_NAMES} from '../utils/constant'
 const config = {
@@ -94,3 +92,24 @@ export const paymentService = async (payload) => {
   });
   return data
 };
+
+export const getListPartnerService = async (payload) => {
+  const accessToken = await getStore(COOKIE_NAMES.ACCESS_TOKEN);
+  const data = await fetch("http://103.2.230.53:8089/gs-payment/api/partner/get-partners", {
+    method: "POST", 
+    body:JSON.stringify( payload), 
+    headers: {
+      ...config.headers,
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+    }
+  })
+  .then((res) => res.json())
+  .then((res) => {
+     return res
+   })
+  .catch((error) => {
+     return error
+  });
+  return data
+};
+

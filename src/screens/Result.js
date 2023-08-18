@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { View, SafeAreaView, TouchableOpacity, Alert, StyleSheet } from "react-native";
-import { Spacing, Colors, Text, Input, Button, Icon, Image, ScaleSize } from "@momo-kits/core";
-// import { PaymentWidget } from '@momo-kits/transaction';
-import Skeleton from '@momo-kits/skeleton'
+import React, { useState } from "react";
+import { View, SafeAreaView, StyleSheet } from "react-native";
+import { Spacing, Colors, Text, Button, Image, ScaleSize } from "@momo-kits/core";
+
 import { InforTable } from "@momo-kits/bank";
 import _get from 'lodash/get'
 import { markParkingSessionService} from '../api';
-import PaymentStatus from '../components/PaymentWidget'
 import ImageAssets from '../utils/ImageAssets';
-import {getFontWeightMedium, formatNumberToMoney, formatTimeByGTM7 } from '../utils/utils';
+import {getFontWeightMedium, formatTimeByGTM7 } from '../utils/utils';
 import { handleFormatMoney, getStore } from "../utils/utils";
 import MiniApi from "@momo-miniapp/api";
 import { useRequest } from 'ahooks';

@@ -3,7 +3,7 @@ import {
   View,
   SafeAreaView
 } from "react-native";
-import { Spacing, Text, Button, Popup } from "@momo-kits/core";
+import { Spacing, Text, Button } from "@momo-kits/core";
 
 import { InforTable } from "@momo-kits/bank";
 

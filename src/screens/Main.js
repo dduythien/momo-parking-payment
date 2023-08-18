@@ -1,26 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { View, SafeAreaView, TouchableOpacity } from "react-native";
-import { Spacing, Colors, Text, Input, Button, Icon } from "@momo-kits/core";
-
-import { AutoComplete } from "@momo-kits/auto-complete";
-import { Radio, RadioList } from "@momo-kits/radio";
+import { Spacing, Text, Input, Button } from "@momo-kits/core";
+import { RadioList } from "@momo-kits/radio";
 import {useRequest} from 'ahooks'
 import MiniApi from "@momo-miniapp/api";
 import {COOKIE_NAMES} from '../utils/constant'
 import _get from 'lodash/get'
 import Detail from './Detail';
-import {authenticate, createParkingSessionService} from '../api';
+import {authenticate, createParkingSessionService, getListPartnerService} from '../api';
 import momoConfig from '../momoConfig'
-
-const data4 = [{ title: "Viettel Complex", value: "ViettelComplex" }];
-
-const data1 = [
-  { title: "MobiFone" },
-  { title: "VinaPhone" },
-  { title: "Viettel" },
-  { title: "Vietnamobile" },
-  { title: "GMobile" },
-];
+import ListPartner from '../components/ListPartner';
 
 const TYPE_INFO = {
   VEHICLE_NUMBER:  'Biển số xe',
@@ -29,18 +18,25 @@ const TYPE_INFO = {
 
 const HomeScreen = (props) => {
 
-  const data = [
-    { name: "Item 1.1", test: "1" },
-    { name: "Item 1.1", test: "2" },
-    { name: "Item 1.1", test: "3" },
-    { name: "Item 1.1", test: "14" },
-  ];
-
   const [typeInfo, setTypeInfo] = useState(0)
 
-  const [partnerCode, setPartnerCode] = useState('viettelComplex')
-  const [cardLabel, setCardLabel] = useState('') //8815
-  const [vehicleNumber, setVehicleNumber] = useState('') //51H-31401
+  const [partnerCode, setPartnerCode] = useState('ViettelComplex')
+  const [cardLabel, setCardLabel] = useState('')
+  const [vehicleNumber, setVehicleNumber] = useState('')
+  const [listPartner, setListPartner] = useState([])
+
+  const { runAsync: getListPartner } = useRequest(
+    () =>
+    getListPartnerService({}),
+    {
+      onSuccess: async (data) => {
+        const { result = [] } = data;
+        setListPartner(result)
+      },
+      manual: true
+    },
+  );
+
   const { run: fetchAccount } = useRequest(
     () =>
       authenticate({
@@ -54,8 +50,9 @@ const HomeScreen = (props) => {
       onSuccess: async (data) => {
         const accessToken = _get(data, "item.accessToken");
         await MiniApi.setItem(COOKIE_NAMES.ACCESS_TOKEN, accessToken);
-        MiniApi.hideLoading()
+        await getListPartner()
       },
+      onFinally: () => MiniApi.hideLoading()
     },
   );
 
@@ -107,6 +104,7 @@ const HomeScreen = (props) => {
       companyCode: "MOMO",
       bypassCheckFee: true,
     };
+    console.log("Payload createParkingSession: ", payload)
     createParkingSession(payload)
   }
 
@@ -141,30 +139,38 @@ const HomeScreen = (props) => {
           </Text>
         </View>
 
-        {/* <AutoComplete
-          data={data4}
-          onSelected={(selected) => console.log(selected.value)}
-        >
+        <TouchableOpacity onPress={
+          () => {
+            const { navigator } = props;
+            console.log("navigator: ", navigator)
+            navigator.showBottom({
+                screen: (propss) => <View>
+                  <View style={{backgroundColor: "#fff", padding: Spacing.XL, borderTopLeftRadius: 25, borderTopRightRadius: 25}}>
+                    <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginBottom: Spacing.XL}}>
+                      <Text ariant="title2" weight="bold">Chọn bãi giữ xe</Text>
+                    </View>
+                    <ListPartner dataSource={listPartner} onCheck={(item) => {
+                        setPartnerCode(item);
+                        propss.navigator.dismiss();
+                      }} selected={partnerCode} />
+                  </View>
+                </View>,
+            });
+    
+          }
+        }>
           <Input
-            keyAutoComplete="title-value"
-            cancellable
-            floatingValue="Nhập bãi giữ xe"
-            placeholder="Nhập dữ liệu"
-            value={partnerCode}
-            disable
-          />
-        </AutoComplete> */}
-          <Input
-          onChangeText={ (text) => setPartnerCode(text)}
-          placeholder="Nhập dữ liệu"
-          // cancellable
-          floatingValue={"Bãi giữ xe"}
-          floatingIcon={null}
-          floatingIconStyle={{}}
-          floatingNumberOfLines={1}
-          value={partnerCode}
-          disabled
-        />
+              placeholder="Nhập dữ liệu"
+              floatingValue={"Bãi giữ xe"}
+              floatingIcon={null}
+              floatingIconStyle={{}}
+              floatingNumberOfLines={1}
+              value={partnerCode}
+              disabled
+              textStyle={{color: "#000"}}
+            />
+      
+        </TouchableOpacity>
 
         <RadioList
           data={[
