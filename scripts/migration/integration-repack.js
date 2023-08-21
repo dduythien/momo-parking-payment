@@ -31,7 +31,6 @@ function addDependencies() {
     packageJSON.devDependencies['react-test-renderer'] = '17.0.1';
     packageJSON.devDependencies['@babel/preset-env'] = '^7.15.6';
     packageJSON.devDependencies['babel-plugin-module-resolver'] = '^4.0.0';
-    packageJSON.devDependencies['node-polyfill-webpack-plugin'] = '2.0.1';
 
 
     packageJSON.resolutions['react'] = '17.0.1';
