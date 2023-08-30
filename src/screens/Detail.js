@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  SafeAreaView
-} from "react-native";
-import { Spacing, Text, Button } from "@momo-kits/core";
+import { View, SafeAreaView, StyleSheet } from "react-native";
+import { Spacing, Text, Button, Colors } from "@momo-kits/core";
 
 import { InforTable } from "@momo-kits/bank";
+// import { MessageInformation } from '@momo-kits/message';
 
 import { useRequest } from "ahooks";
 import MiniApi from "@momo-miniapp/api";
 import { COOKIE_NAMES } from "../utils/constant";
 import _get from "lodash/get";
 import { paymentService } from "../api";
-import { handleFormatMoney } from "../utils/utils";
-import momoConfig from '../momoConfig'
-
+import { handleFormatMoney, formatTimeByGTM7 } from "../utils/utils";
+import momoConfig from "../momoConfig";
+import MessageInformation from '../components/MessageInformation'
 
 import CryptoJS from "crypto-js";
 
@@ -37,85 +35,107 @@ const DetailScreen = (props) => {
     const inforTableData = [
       {
         title: "Dịch vụ",
-        value: "Thu hộ phí giữ xe toà nhà 285 CMT8",
+        value: `Thu hộ phí giữ xe ${data.partnerCode}`,
       },
       {
-        title: "Mã nhà cung cấp",
-        value: data.companyCode,
+        title: "Mã thẻ xe",
+        value: String(data.cardLabel),
+      },
+      {
+        title: "Biển số xe",
+        value: String(data.vehicleNumber),
       },
       {
         title: "Mã đơn hàng",
         value: String(data.parkingSessionId),
       },
       {
-        title: "Mã hoá đơn",
-        value: data.transactionId,
-      },
-      {
         title: "Số tiền giao dịch",
         value: handleFormatMoney(data.fee, "đ"),
       },
+      {
+        title: "Thời gian vào",
+        value: formatTimeByGTM7(data.checkInTime),
+      },
     ];
     setPaymentDisplayInfo(inforTableData);
-    setPaymentInfo(data)
+    setPaymentInfo(data);
   }, []);
 
   const { runAsync: goPayment, error } = useRequest(
-    (payload) =>
-    paymentService(payload),
+    (payload) => paymentService(payload),
     {
       onBefore: () => {
-        MiniApi.showLoading()
+        MiniApi.showLoading();
       },
       onSuccess: async (data) => {
-        console.log(data)
-        const {resultCode, deeplinkMiniApp} = data;
+        console.log(data);
+        const { resultCode, deeplinkMiniApp } = data;
         if (resultCode === 0 && deeplinkMiniApp) {
           MiniApi.openURL(deeplinkMiniApp);
         } else {
           const { navigator } = props;
           MiniApi.showAlert(
             "Thông báo",
-            'Chưa cấp quyền sử dụng deepLink miniApp',
+            "Chưa cấp quyền sử dụng deepLink miniApp",
             ["OK"]
-          )
+          );
         }
       },
       onError: async (data) => {
         MiniApi.showAlert(
           "Thông báo",
-          'Đã có lỗi xảy ra. Vui lòng kiểm tra lại thông tin',
+          "Đã có lỗi xảy ra. Vui lòng kiểm tra lại thông tin",
           ["OK"]
-        )
+        );
       },
       onFinally: () => {
-        MiniApi.hideLoading()
+        MiniApi.hideLoading();
       },
-      manual: true
-    },
+      manual: true,
+    }
   );
 
-  const onPayment = async() => {
-
+  const onPayment = async () => {
     const date = new Date().getTime();
-    const requestId = date+"id";
-    const orderId = date +":0123456778";
-    
+    const requestId = date + "id"  // paymentInfo.parkingSessionId + date; // date + "id";
+    const orderId =  paymentInfo.parkingSessionId; // date + ":0123456778";
+
     const amount = paymentInfo.fee;
     // const orderId = paymentInfo.id;
     // const requestId = paymentInfo.transactionId;
 
-    const orderInfo = "Thu hộ phí giữ xe toà nhà 285 CMT8";
+    const orderInfo = `Thu hộ phí giữ xe ${paymentInfo.partnerCode}`;
     const partnerCode = momoConfig.partnerCode;
     const extraData = momoConfig.extraData;
     const accessKey = momoConfig.accessKey;
 
-    const redirectUrl =  momoConfig.redirectUrl;
+    const redirectUrl = momoConfig.redirectUrl;
     const ipnUrl = momoConfig.ipnUrl;
     const requestType = "captureWallet";
     const paymentCode = "MOMO";
-    const rawSignature = "accessKey=" + accessKey + "&amount=" + amount + "&extraData=" + extraData + "&ipnUrl=" + ipnUrl + "&orderId=" + orderId + "&orderInfo=" + orderInfo + "&partnerCode=" + partnerCode +  "&redirectUrl=" + redirectUrl + "&requestId=" + requestId + "&requestType=" + requestType;
- 
+    const rawSignature =
+      "accessKey=" +
+      accessKey +
+      "&amount=" +
+      amount +
+      "&extraData=" +
+      extraData +
+      "&ipnUrl=" +
+      ipnUrl +
+      "&orderId=" +
+      orderId +
+      "&orderInfo=" +
+      orderInfo +
+      "&partnerCode=" +
+      partnerCode +
+      "&redirectUrl=" +
+      redirectUrl +
+      "&requestId=" +
+      requestId +
+      "&requestType=" +
+      requestType;
+
     const secretKey = momoConfig.secretKey;
     const hash = CryptoJS.HmacSHA256(rawSignature, secretKey);
     const signature = CryptoJS.enc.Hex.stringify(hash);
@@ -135,13 +155,18 @@ const DetailScreen = (props) => {
       lang: "vi",
       autoCapture: true,
       storeId: partnerCode,
-    }
-    console.log(payload)
-    console.log("SET RCOOKIE_NAMES.PARKING_SESSION_ID: ", paymentInfo.parkingSessionId)
-    await MiniApi.setItem(COOKIE_NAMES.PARKING_SESSION_ID, paymentInfo.parkingSessionId);
+    };
+    console.log(payload);
+    console.log(
+      "SET RCOOKIE_NAMES.PARKING_SESSION_ID: ",
+      paymentInfo.parkingSessionId
+    );
+    await MiniApi.setItem(
+      COOKIE_NAMES.PARKING_SESSION_ID,
+      paymentInfo.parkingSessionId
+    );
 
-    await goPayment(payload)
-  
+    await goPayment(payload);
   };
 
   return (
@@ -157,6 +182,13 @@ const DetailScreen = (props) => {
           }
           data={paymentDisplayInfo}
         />
+        <View style={{paddingHorizontal: Spacing.L, paddingBottom: Spacing.L, backgroundColor: Colors.white}}>
+          <MessageInformation
+            title="Lưu ý:"
+            message={`Quý khách vui lòng lấy xe trước ${paymentInfo.freeMinutes} phút kể từ thời điểm thanh toán thành công để không phát sinh thêm phí.`}
+          />
+        </View>
+
         <View
           style={{
             flex: 1,

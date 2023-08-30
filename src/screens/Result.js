@@ -6,6 +6,8 @@ import { InforTable } from "@momo-kits/bank";
 import _get from 'lodash/get'
 import { markParkingSessionService} from '../api';
 import ImageAssets from '../utils/ImageAssets';
+import moment from 'moment';
+import MessageInformation from '../components/MessageInformation'
 import {getFontWeightMedium, formatTimeByGTM7 } from '../utils/utils';
 import { handleFormatMoney, getStore } from "../utils/utils";
 import MiniApi from "@momo-miniapp/api";
@@ -37,10 +39,10 @@ const [parkingSessionIdInfo, parkingSession] = useState('')
         companyCode: "MOMO",
         parkingSessionId,
         transactionId:  props.params.transId,
-        paymentDate: formatTimeByGTM7(new Date(1692272380177), 'YYYY-MM-DD'),
+        paymentDate: new Date(Number(props.params.responseTime)).toISOString(),
         fee: props.params.amount,
       }
-      console.log("payload:  ", payload)
+      console.log("markParkingSessionService payload:  ", payload)
       return markParkingSessionService(payload)
     },
     {
@@ -54,7 +56,7 @@ const [parkingSessionIdInfo, parkingSession] = useState('')
             ["OK"]
           )
         }
-        return data;
+        // return data;
       },
       onError: (error) => {
         console.log("error: ", error);
@@ -97,15 +99,15 @@ const [parkingSessionIdInfo, parkingSession] = useState('')
               },
               {
                 title: "Thời gian",
-                value: formatTimeByGTM7(new Date(1692272380177)),
+                value: moment(new Date(Number(props.params.responseTime))).format('DD/MM/YYYY HH:mm'),
               },
               {
                 title: "Mã đơn hàng",
-                value: String(parkingSessionIdInfo),  
+                value: String(props.params.transId),
               },
               {
                 title: "Mã hoá đơn",
-                value: props.params.transId,
+                value: String(parkingSessionIdInfo),
               },
               {
                 title: "Số tiền giao dịch",
@@ -113,7 +115,14 @@ const [parkingSessionIdInfo, parkingSession] = useState('')
               },
             ]}
           />
+                  {/* <View style={{paddingHorizontal: Spacing.L, paddingBottom: Spacing.L, width: '100%', backgroundColor: Colors.white}}>
+          <MessageInformation
+            title="Lưu ý"
+            message={`Vui lòng lấy xe ra trong vòng 30p`}
+          />
+        </View> */}
         </View>
+        
         <View
           style={{
             flex: 1,

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, SafeAreaView, TouchableOpacity } from "react-native";
-import { Spacing, Text, Input, Button } from "@momo-kits/core";
+import { Spacing, Text, Input, Button, Colors } from "@momo-kits/core";
 import { RadioList } from "@momo-kits/radio";
 import {useRequest} from 'ahooks'
 import MiniApi from "@momo-miniapp/api";
@@ -73,6 +73,8 @@ const HomeScreen = (props) => {
           )
         } else {
           const { navigator } = props;
+        console.log("createParkingSessionService: success -> navigate")
+
           navigator.push({
             screen: Detail,
             options: {title: "Thanh toán"},
@@ -98,11 +100,11 @@ const HomeScreen = (props) => {
       return;
     }
     const payload = {
-      cardLabel,
-      vehicleNumber,
+      ...(cardLabel ? {cardLabel} : {}),
+      ...(vehicleNumber ? {vehicleNumber} : {}),
       partnerCode,
       companyCode: "MOMO",
-      bypassCheckFee: true,
+      bypassCheckFee: false,
     };
     console.log("Payload createParkingSession: ", payload)
     createParkingSession(payload)
@@ -132,7 +134,7 @@ const HomeScreen = (props) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ padding: Spacing.XL, flex: 1 }}>
+      <View style={{ padding: Spacing.XL, flex: 1, backgroundColor: Colors.white }}>
         <View style={{ marginBottom: Spacing.XL }}>
           <Text variant="h4" weight="bold">
             Thông tin chi tiết

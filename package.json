@@ -13,6 +13,7 @@
   "dependencies": {
     "@momo-kits/bank": "^0.0.48-rc.4",
     "@momo-kits/core": "0.0.54-beta",
+    "@momo-kits/message": "^0.0.48-rc.4",
     "@momo-kits/radio": "^0.0.48-rc.4",
     "@momo-miniapp/api": "^0.1.5-beta.3",
     "ahooks": "^3.7.8",
