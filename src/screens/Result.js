@@ -115,12 +115,12 @@ const [parkingSessionIdInfo, parkingSession] = useState('')
               },
             ]}
           />
-                  {/* <View style={{paddingHorizontal: Spacing.L, paddingBottom: Spacing.L, width: '100%', backgroundColor: Colors.white}}>
-          <MessageInformation
-            title="Lưu ý"
-            message={`Vui lòng lấy xe ra trong vòng 30p`}
-          />
-        </View> */}
+          <View style={{paddingHorizontal: Spacing.L, paddingBottom: Spacing.L, width: '100%', backgroundColor: Colors.white}}>
+            <MessageInformation
+              title="Lưu ý:"
+              message={`Quý khách vui lòng lấy xe trước ${30} phút kể từ thời điểm thanh toán thành công để không phát sinh thêm phí.`}
+            />
+          </View>
         </View>
         
         <View

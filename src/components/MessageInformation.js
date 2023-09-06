@@ -13,13 +13,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   message: {
-    fontSize: 12,
-    color: Colors.black_17,
+    fontSize: 14,
+    color: Colors.red_fund,
     marginRight: Spacing.M,
     lineHeight: 16,
   },
   title: {
     marginBottom: Spacing.XS,
+    color: Colors.red_fund
   },
   messageContainer: {
     flex: 1,
