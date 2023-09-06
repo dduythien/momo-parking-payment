@@ -74,12 +74,15 @@ const HomeScreen = (props) => {
         } else {
           const { navigator } = props;
         console.log("createParkingSessionService: success -> navigate")
-
+        const dataPartnerSelected = listPartner.find(p => p.code === partnerCode)
           navigator.push({
             screen: Detail,
             options: {title: "Thanh toán"},
             params: {
-              data
+              data: {
+                ...data,
+                partnerSelected: dataPartnerSelected
+              }
             }
           })
         }
@@ -131,6 +134,7 @@ const HomeScreen = (props) => {
     }
   }
   
+  const partnerSelected = listPartner.find(p => p.code === partnerCode)
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -167,7 +171,7 @@ const HomeScreen = (props) => {
               floatingIcon={null}
               floatingIconStyle={{}}
               floatingNumberOfLines={1}
-              value={partnerCode}
+              value={partnerSelected?.name}
               disabled
               textStyle={{color: "#000"}}
             />

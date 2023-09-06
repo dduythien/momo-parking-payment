@@ -28,14 +28,16 @@ const data1 = [
 const DetailScreen = (props) => {
   const [paymentInfo, setPaymentInfo] = useState({});
   const [paymentDisplayInfo, setPaymentDisplayInfo] = useState([]);
-
+  const partnerNameSelected = _get(props, "params.data.partnerSelected.name");
   useEffect(() => {
     const data = _get(props, "params.data.item");
+    const partnerSelected = _get(props, "params.data.partnerSelected.name");
     console.log(props);
+    console.log("${data?.partnerSelected?.name: ", partnerSelected)
     const inforTableData = [
       {
         title: "Dịch vụ",
-        value: `Thu hộ phí giữ xe ${data.partnerCode}`,
+        value: `Thu hộ phí giữ xe ${partnerSelected}`,
       },
       {
         title: "Mã thẻ xe",
@@ -105,7 +107,7 @@ const DetailScreen = (props) => {
     // const orderId = paymentInfo.id;
     // const requestId = paymentInfo.transactionId;
 
-    const orderInfo = `Thu hộ phí giữ xe ${paymentInfo.partnerCode}`;
+    const orderInfo = `Thu hộ phí giữ xe ${partnerNameSelected}`;
     const partnerCode = momoConfig.partnerCode;
     const extraData = momoConfig.extraData;
     const accessKey = momoConfig.accessKey;
